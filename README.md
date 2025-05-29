@@ -1,8 +1,8 @@
 # SimpleDeckyTDP
 
-[![](https://img.shields.io/github/downloads/aarron-lee/SimpleDeckyTDP/total.svg)](https://github.com/aarron-lee/SimpleDeckyTDP/releases)
+[![](https://img.shields.io/github/downloads/fewtarius/SimpleDeckyTDP/total.svg)](https://github.com/fewtarius/SimpleDeckyTDP/releases)
 
-This is a Linux TDP Decky Plugin with support for AMD and experimental Intel support
+This is a (formerly simple) Linux TDP Decky Plugin that wraps ryzenadj. Intended for devices compatible with ryzenadj.
 
 - [Features](#features)
 - [Compatibility](#compatibility)
@@ -32,10 +32,9 @@ This is a Linux TDP Decky Plugin with support for AMD and experimental Intel sup
   - custom TDP limits
 - Power Governor and Energy Performance Preference controls
 - GPU Controls
-  - GPU Controls are not available on Intel
 - SMT control
 - CPU Boost control\*
-  - note, AMD devices require a newer kernel for CPU boost controls
+  - note, requires a newer kernel for CPU boost controls
   - CPU boost controls appear automatically if it's available
   <!-- - (optional) Fix Steam Client TDP and GPU Sliders -->
 - set TDP on AC Power events and suspend-resume events
@@ -47,17 +46,17 @@ This is a Linux TDP Decky Plugin with support for AMD and experimental Intel sup
 
 ## Compatibility
 
-Tested on ChimeraOS, NobaraOS, SteamFork, and Bazzite.
+Tested on [fewtarius](https://github.com/fewtarius), other distributions are not tested.
 
-Other distros not tested. Intel support is experimental and still a work in progress.
+Other distros not tested.
 
-Currently NOT compatible with Nvidia or other discrete GPU systems, this plugin is currently for APUs only
+Currently NOT compatible with Intel or Nvidia, this plugin is currently AMD APUs only
 
 ## Requirements
 
-### AMD
-
 ### WARNING: This plugin assumes you already have ryzenadj installed and can be located in your PATH
+
+Note that ryzenadj is NOT necessary if you plan on using a [ryzenadj override](#custom-tdp-method).
 
 ChimeraOS, Bazzite Deck Edition, and NobaraOS Deck edition, should already have ryzenadj pre-installed.
 
@@ -74,35 +73,23 @@ If you do not have ryzenadj installed, you will need to get a working copy insta
 
 See [here](#ryzenadj-troubleshooting) for more info on ryzenadj
 
-### Intel
-
-Intel support was built for the `intel_pstate` scaling driver, and is still an experimental work in progress.
-
-To check if your system is compatible, run the following in terminal:
-
-```bash
-cat /sys/devices/system/cpu/cpufreq/policy*/scaling_driver
-```
-
-If the scaling is `intel_pstate`, then your device should be compatible
-
 # Install
 
 ### Prerequisites
 
-Decky Loader must already be installed. If using ryzenadj for TDP control, test ryzenadj first to make sure it's working on your device.
+Decky Loader must already be installed. If using ryzenadj for TDP control, secure boot must be disabled.
 
 ### Quick Install / Update
 
 Run the following in terminal, then reboot. Note that this works both for installing or updating the plugin
 
 ```
-curl -L https://github.com/aarron-lee/SimpleDeckyTDP/raw/main/install.sh | sh
+curl -L https://github.com/fewtarius/SimpleDeckyTDP/raw/main/install.sh | sh
 ```
 
 ### Manual Install
 
-Download the latest release from the [releases page](https://github.com/aarron-lee/SimpleDeckyTDP/releases)
+Download the latest release from the [releases page](https://github.com/fewtarius/SimpleDeckyTDP/releases)
 
 Unzip the `tar.gz` file, and move the `SimpleDeckyTDP` folder to your `$HOME/homebrew/plugins` directory
 
@@ -122,7 +109,7 @@ Dependencies:
 - fully functional ryzenadj
 
 ```bash
-git clone https://github.com/aarron-lee/SimpleDeckyTDP.git
+git clone https://github.com/fewtarius/SimpleDeckyTDP.git
 
 cd SimpleDeckyTDP
 
@@ -155,9 +142,7 @@ sudo systemctl restart plugin_loader.service
 
 ### Desktop App
 
-[SimpleDeckyTDP-Desktop App](https://github.com/aarron-lee/SimpleDeckyTDP-Desktop) - Desktop port of SimpleDeckyTDP
-
-Intel support is still a work in progress for the Desktop app
+[SimpleDeckyTDP-Desktop App](https://github.com/fewtarius/SimpleDeckyTDP-Desktop) - Desktop port of SimpleDeckyTDP
 
 - Note: the Desktop app does not have full feature parity with the Decky Plugin. Certain features cannot be implemented yet, such as:
   - per-game profiles
@@ -167,6 +152,10 @@ Intel support is still a work in progress for the Desktop app
 The Desktop App also should not be used simultaneously with the SimpleDeckyTDP decky plugin, you should only use one or the other at any given time.
 
 This is because 2-way communication between the plugin and Desktop app is currently not possible.
+
+### Custom Device settings
+
+See [device settings README](./py_modules/devices/README.md)
 
 ### Are there CPU boost controls?
 
@@ -194,7 +183,7 @@ First try updating the plugin to the latest version.
 
 ```
 # update script
-curl -L https://github.com/aarron-lee/SimpleDeckyTDP/raw/main/install.sh | sh
+curl -L https://github.com/fewtarius/SimpleDeckyTDP/raw/main/install.sh | sh
 ```
 
 If this doesn't fix your issue, next try deleting your `$HOME/homebrew/settings/SimpleDeckyTDP/settings.json` file, and rebooting.
@@ -209,9 +198,31 @@ Try deleting the `$HOME/homebrew/settings/SimpleDeckyTDP/settings.json` file.
 
 Note that this will delete any of your saved TDP profiles, so you could optionally copy it somewhere else to keep it as a backup instead.
 
+<!-- ### Steam GPU slider does not appear with the "Fix Steam Hardware Controls" enabled
+
+If the Steam GPU Slider does not show up, this is an OS bug. SimpleDeckyTDP has no control over the GPU slider showing up, the plugin can only modify it.
+
+If you are seeing this issue on BazziteOS, you need to install SimpleDeckyTDP with `ujust setup-decky simpledeckytdp` for the GPU slider
+
+If you encounter this issue, turn off `Fix Steam Hardware Controls` and use the GPU slider in the SimpleDeckyTDP plugin. -->
+
 ### My eGPU is being affected by TDP settings
 
 The Steam GPU slider reportedly affects eGPUs, if you are using an eGPU you should disable Steam's GPU toggle.
+
+<!--
+You will also have to manually disable the GPU control toggle and TDP toggle in the Steam QAM, since it can still affect GPU clocks even if SimpleDeckyTDP is no longer managing the Steam Sliders. -->
+
+<!-- ### Steam TDP slider and GPU Slider not working consistently with the "Fix Steam Hardware Controls" enabled
+
+There's a few possibilities:
+
+1. The Steam Client recently updated and broke the patch functionality of the plugin.
+2. Your OS/Distro has a polkit file that is interfering with setting TDP/GPU values. This is a known issue on NobaraOS
+
+For possibility #1, you can disable the `Fix Steam Hardware Controls` toggle, and instead use the TDP + GPU sliders in the plugin
+
+For possibility #2, you can either enable polling to workaround the polkit file, or ask your distro maintainer to patch/update the polkit file. -->
 
 ### ROG Ally Troubleshooting
 
@@ -260,16 +271,12 @@ PM Table Version: 450005
 
 If you see an error, you may need to set `iomem=relaxed` as a boot parameter for your kernel, or disable secure boot.
 
-Note that if you have SELinux + early lockdown enabled, ryzenadj will not work when trying to set TDP.
-
 # Attribution
 
 Thanks to the following for making this plugin possible:
 
-- [PowerControl](https://github.com/mengmeet/PowerControl/)
+- [SimpleDeckyTDP](https://github.com/fewtarius/SimpleDeckyTDP)
 - [hhd-adjustor](https://github.com/hhd-dev/adjustor/)
 - [hhd-hwinfo](https://github.com/hhd-dev/hwinfo)
 - [decky loader](https://github.com/SteamDeckHomebrew/decky-loader/)
 - [ryzenadj](https://github.com/FlyGoat/RyzenAdj)
-
-As well as a big shoutout to SteamFork folks for troubleshooting and testing Intel support

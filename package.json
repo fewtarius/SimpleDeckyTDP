@@ -16,12 +16,12 @@
     "decky",
     "plugin"
   ],
-  "author": "Aarron L",
+  "author": "Aarron L and Fewtarius",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/aarron-lee/SimpleDeckyTDP/issues"
+    "url": "https://github.com/fewtarius/SimpleDeckyTDP/issues"
   },
-  "homepage": "https://github.com/aarron-lee/SimpleDeckyTDP",
+  "homepage": "https://github.com/fewtarius/SimpleDeckyTDP",
   "devDependencies": {
     "@decky/rollup": "^1.0.1",
     "@rollup/plugin-commonjs": "^26.0.1",
