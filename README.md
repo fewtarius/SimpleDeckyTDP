@@ -1,7 +1,5 @@
 # SimpleDeckyTDP
 
-[![](https://img.shields.io/github/downloads/fewtarius/SimpleDeckyTDP/total.svg)](https://github.com/fewtarius/SimpleDeckyTDP/releases)
-
 This is a variant of SimpleDeckyTDP for my personal use, it is only tested on my systems.  Use at your own risk.
 
 # Install
