@@ -275,7 +275,7 @@ If you see an error, you may need to set `iomem=relaxed` as a boot parameter for
 
 Thanks to the following for making this plugin possible:
 
-- [SimpleDeckyTDP](https://github.com/fewtarius/SimpleDeckyTDP)
+- [SimpleDeckyTDP](https://github.com/aarron-lee/SimpleDeckyTDP)
 - [hhd-adjustor](https://github.com/hhd-dev/adjustor/)
 - [hhd-hwinfo](https://github.com/hhd-dev/hwinfo)
 - [decky loader](https://github.com/SteamDeckHomebrew/decky-loader/)
